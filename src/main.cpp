@@ -1,6 +1,9 @@
 #include <iostream>
 
+#include "kaleidoscope/lexer.h"
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    kaleidoscope::Lexer lexer;
+    lexer.gettok();
     return 0;
 }

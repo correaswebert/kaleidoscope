@@ -2,14 +2,14 @@
 
 #include "kaleidoscope/lexer.h"
 
-namespace Lexer {
+namespace kaleidoscope {
 
 /**
  * @brief Capture `[a-zA-Z][a-zA-Z0-9]*`
  */
-Token Lexer::get_identifier() {
+int Lexer::get_identifier() {
   if (!isalpha(last_char)) {
-    return Token::Unknown;
+    return static_cast<int>(Token::Unknown);
   }
 
   identifier = last_char;
@@ -18,18 +18,18 @@ Token Lexer::get_identifier() {
     identifier += last_char;
 
   if (identifier == "def")
-    return Token::Def;
+    return static_cast<int>(Token::Def);
   else if (identifier == "extern")
-    return Token::Extern;
-  return Token::Identifier;
+    return static_cast<int>(Token::Extern);
+  return static_cast<int>(Token::Identifier);
 }
 
 /**
  * @brief Capture `[0-9.]+`
  */
-Token Lexer::get_number() {
+int Lexer::get_number() {
   if (!isdigit(last_char) && last_char != '.') {
-    return Token::Unknown;
+    return static_cast<int>(Token::Unknown);
   }
 
   identifier = last_char;
@@ -44,7 +44,7 @@ Token Lexer::get_number() {
   }
 
   number = strtod(identifier.c_str(), nullptr);
-  return Token::Number;
+  return static_cast<int>(Token::Number);
 }
 
 /**
@@ -53,9 +53,9 @@ Token Lexer::get_number() {
  * Also retrigger getting the next token after the comment. This is to avoid
  * returning `Unknown` when a comment is encountered.
  */
-Token Lexer::ignore_comment_get_next_token() {
+int Lexer::ignore_comment_get_next_token() {
   if (last_char != '#') {
-    return Token::Unknown;
+    return static_cast<int>(Token::Unknown);
   }
 
   do
@@ -66,37 +66,37 @@ Token Lexer::ignore_comment_get_next_token() {
     return Lexer::gettok();
 
   // should not reach here
-  return Token::Unknown;
+  return static_cast<int>(Token::Unknown);
 }
 
-Token Lexer::gettok() {
-  Token token = Token::Unknown;
+int Lexer::gettok() {
+  int token = static_cast<int>(Token::Unknown);
 
   // skip whitespaces
   while (isspace(last_char))
     last_char = getchar();
 
   token = get_identifier();
-  if (token != Token::Unknown)
+  if (token != static_cast<int>(Token::Unknown))
     return token;
 
   token = get_number();
-  if (token != Token::Unknown)
+  if (token != static_cast<int>(Token::Unknown))
     return token;
 
   token = ignore_comment_get_next_token();
-  if (token != Token::Unknown)
+  if (token != static_cast<int>(Token::Unknown))
     return token;
   
   if (last_char == EOF)
-    return Token::Eof;
+    return static_cast<int>(Token::Eof);
 
   // return the character as its ascii value
   // this block handles single-character tokens like operators (+, -, *, etc.)
   // that aren't part of identifiers, numbers, or comments.
   opchar = last_char;
   last_char = getchar();
-  return Token::Operator;
+  return static_cast<int>(Token::Operator);
 };
 
-} // namespace Lexer
+} // namespace kaleidoscope

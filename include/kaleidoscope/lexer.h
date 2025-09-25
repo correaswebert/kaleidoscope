@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Lexer {
+namespace kaleidoscope {
 
 enum class Token {
   Unknown,
@@ -22,12 +22,13 @@ class Lexer {
   std::string identifier;
   double number;
 
-  Token get_identifier();
-  Token get_number();
-  Token ignore_comment_get_next_token();
+  int get_identifier();
+  int get_number();
+  int ignore_comment_get_next_token();
 
 public:
-  Token gettok();
+  Lexer() : last_char(' '), opchar(' '), identifier(""), number(0.) {}
+  int gettok();
 };
 
-} // namespace Lexer
+} // namespace kaleidoscope
